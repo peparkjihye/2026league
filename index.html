@@ -217,6 +217,14 @@
     .person-section { flex-direction: column; }
   }
 </style>
+<head>
+  ...
+  <style>...</style>
+
+  <!-- ▼ XLSX 라이브러리: 엑셀 파일 읽기용 -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- ▲ XLSX 라이브러리 -->
+
 </head>
 <body>
 
@@ -338,7 +346,7 @@
       <div class="form-row">
         <div class="form-group">
           <label>득점 선수 및 기타사항</label>
-          <textarea id="inp-note" placeholder="득점 선수, 특이사항 등 입력"></textarea>
+          <textarea id="inp-note" placeholder="득점 선수, 특이사항 등 입력(예: 2반: 박지혜(2) )"></textarea>
         </div>
       </div>
       <div style="display:flex; gap:10px;">
@@ -411,6 +419,17 @@
       <div id="team-list" style="margin-top:14px;"></div>
     </div>
   </div>
+
+      <!-- ▼ 엑셀 업로드 구역 추가 -->
+      <hr style="margin:16px 0; border:none; border-top:1px dashed #e5e7eb;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>엑셀로 팀 명단 업로드 (조 / 팀이름)</label>
+          <input type="file" id="team-upload-file" accept=".xlsx,.xls,.csv">
+        </div>
+        <button class="btn btn-sm" style="align-self:flex-end;" onclick="importTeamsFromExcel()">엑셀에서 불러오기</button>
+      </div>
+      <!-- ▲ 엑셀 업로드 구역 추가 끝 -->
 
   <!-- 운영진·심판 -->
   <div id="sec-staff" class="section">
@@ -643,6 +662,107 @@ function renderTeams() {
           <button class="chip-remove" onclick="removeTeam(${t.id})">✕</button>
         </span>`).join('')}</div>
     </div>`).join('');
+}
+
+/* ===== 엑셀에서 팀 명단 가져오기 (조 / 팀이름, 1행 헤더) ===== */
+function importTeamsFromExcel() {
+  // 관리자만 가능
+  if (!isAdmin() && !ensureAdmin()) return;
+
+  const input = document.getElementById('team-upload-file');
+  if (!input || !input.files || !input.files[0]) {
+    toast('엑셀 파일을 먼저 선택해 주세요.');
+    return;
+  }
+  const file = input.files[0];
+
+  // XLSX 라이브러리 존재 여부 확인
+  if (typeof XLSX === 'undefined') {
+    console.error('XLSX 라이브러리가 로드되지 않았습니다.');
+    toast('엑셀 라이브러리를 불러오지 못했습니다. 인터넷 연결 또는 스크립트 경로를 확인해 주세요.');
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+        toast('엑셀 파일에 시트가 없습니다.');
+        return;
+      }
+
+      const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 사용
+      const sheet = workbook.Sheets[sheetName];
+
+      if (!sheet) {
+        toast('엑셀 시트를 읽지 못했습니다.');
+        return;
+      }
+
+      // header: 1 → 2차원 배열: [ [조, 팀이름], [A, 1-1반], ... ]
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      if (!rows || !rows.length) {
+        toast('시트에 데이터가 없습니다.');
+        return;
+      }
+
+      const s = getState();  // 현재 currentGrade에 해당하는 상태
+      const newTeams = [];
+
+      rows.slice(1).forEach((row, idx) => {
+        if (!row || row.length < 2) return;
+
+        const groupRaw = (row[0] || '').toString().trim();
+        const nameRaw  = (row[1] || '').toString().trim();
+
+        if (!nameRaw) return; // 팀 이름 없으면 스킵
+
+        const group = groupRaw.toUpperCase();
+        const name  = nameRaw;
+
+        // 이미 같은 이름 팀이 있으면 건너뛰기
+        if (s.teams.find(t => t.name === name)) return;
+
+        newTeams.push({
+          id: Date.now() + idx,
+          name,
+          group,
+          color: '#1a3c8f'   // 기본 색상
+        });
+      });
+
+      if (!newTeams.length) {
+        toast('추가할 팀 데이터가 없습니다. 엑셀 형식을 다시 확인해 주세요.');
+        return;
+      }
+
+      s.teams = s.teams.concat(newTeams);
+      setState(s);
+
+      renderTeams();
+      updateSelects();
+      updateGroupFilter('filter-group-standing');
+      updateGroupFilter('filter-group');
+      updateTopScorerGroupFilter();
+
+      toast(`✅ ${currentGrade}학년 리그에 엑셀에서 ${newTeams.length}개 팀을 불러왔습니다.`);
+    } catch (err) {
+      console.error('엑셀 파싱 에러:', err);
+      toast('엑셀 파일을 처리하는 중 오류가 발생했습니다.');
+    }
+  };
+
+  reader.onerror = function(err) {
+    console.error('FileReader 에러:', err);
+    toast('엑셀 파일을 읽는 중 오류가 발생했습니다.');
+  };
+
+  reader.readAsArrayBuffer(file);
 }
 
 /* ===== 셀렉트/필터 ===== */
