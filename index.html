@@ -234,7 +234,7 @@
         <div id="recent-matches"></div>
       </div>
       <div class="card">
-        <h2>🥇 상위 순위</h2>
+        <h2>🥇 조별 리그 순위</h2>
         <div id="top-teams"></div>
       </div>
     </div>
@@ -247,7 +247,7 @@
   <label>경기 단계</label>
   <select id="inp-stage" onchange="updateSelects()">
     <option value="group">조별리그</option>
-    <option value="final">본선진출전</option>
+    <option value="final">본선</option>
   </select>
 </div>
         <div class="form-group" style="max-width:80px;">
@@ -440,21 +440,23 @@
     <h2>📋 본선 경기 기록</h2>
     <div id="finals-results-list"></div>
   </div>
-  <div class="card">
-    <h2>🥇 본선 순위표</h2>
-    <div style="overflow-x:auto;">
-      <table>
-        <thead>
-          <tr>
-            <th>순위</th><th>팀명</th><th>조(예선)</th><th>경기</th>
-            <th>승</th><th>무</th><th>패</th>
-            <th>득점</th><th>실점</th><th>득실</th><th>승점</th>
-          </tr>
-        </thead>
-        <tbody id="finals-standings-body"></tbody>
-      </table>
-    </div>
+ <div class="card">
+  <h2>🥇 최종 순위</h2>
+  <p style="font-size:0.78rem;color:var(--gray);margin-bottom:10px;">
+    ※ 준결승 2경기 → 결승 1경기 순으로 입력되어야 정확한 최종 순위가 표시됩니다. (3·4위전 없음, 준결승 패배팀 공동 3위)
+  </p>
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:90px;">순위</th>
+          <th style="text-align:left;padding-left:14px;">팀명</th>
+        </tr>
+      </thead>
+      <tbody id="finals-standings-body"></tbody>
+    </table>
   </div>
+</div>
 </div>  
 <div class="toast" id="toast"></div>
 <script>
@@ -1006,23 +1008,23 @@ function renderFinals() {
     }
   }
 
-  const standings = calcFinalStandings();
+   const ranking = calcFinalRanking();
   const tbody = document.getElementById('finals-standings-body');
   if (tbody) {
-    if (!standings.length) {
-      tbody.innerHTML = '<tr><td colspan="11"><div class="empty"><div class="ei">📋</div>본선 진출팀이 없습니다.</div></td></tr>';
+    if (!ranking) {
+      tbody.innerHTML = '<tr><td colspan="2"><div class="empty"><div class="ei">📋</div>본선 경기(준결승 2경기, 결승 1경기)가 모두 입력되면 최종 순위가 표시됩니다.</div></td></tr>';
     } else {
-      tbody.innerHTML = standings.map((t,i) => {
-        const cls = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
-        const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+      const medalMap = { 1: '🥇', 2: '🥈', 3: '🥉' };
+      const clsMap = { 1: 'r1', 2: 'r2', 3: 'r3' };
+      tbody.innerHTML = ranking.map(r => {
+        const label = r.teams.length > 1 ? `공동 ${r.rank}위` : `${r.rank}위`;
+        const names = r.teams.map(t => `
+          <span style="display:inline-flex;align-items:center;gap:6px;margin-right:14px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:${t.color};display:inline-block;"></span>${t.name}
+          </span>`).join('');
         return `<tr>
-          <td><span class="rank-badge ${cls}">${medal}</span></td>
-          <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${t.color};margin-right:6px;"></span>${t.name}</td>
-          <td>${t.group||'-'}</td><td>${t.P}</td>
-          <td class="w">${t.W}</td><td class="d">${t.D}</td><td class="l">${t.L}</td>
-          <td>${t.GF}</td><td>${t.GA}</td>
-          <td style="color:${t.GF-t.GA>=0?'var(--green)':'var(--red)'};">${t.GF-t.GA>0?'+':''}${t.GF-t.GA}</td>
-          <td class="pts">${t.PTS}</td>
+          <td><span class="rank-badge ${clsMap[r.rank]}">${medalMap[r.rank]}</span></td>
+          <td style="text-align:left;padding-left:14px;">${label} : ${names}</td>
         </tr>`;
       }).join('');
     }
@@ -1233,6 +1235,40 @@ function calcFinalStandings() {
     return a.name.localeCompare(b.name);
   });
 }
+  /* ===== 최종 순위 계산 (준결승 2경기 → 결승 1경기, 3·4위전 없음) ===== */
+function calcFinalRanking() {
+  const s = getState();
+  const finalMatches = s.matches
+    .filter(m => (m.stage || 'group') === 'final')
+    .sort((a, b) => {
+      const na = parseFloat(a.num);
+      const nb = parseFloat(b.num);
+      const va = isNaN(na) ? Infinity : na;
+      const vb = isNaN(nb) ? Infinity : nb;
+      if (va !== vb) return va - vb;
+      return a.id - b.id; // num이 같거나 없으면 입력 순서로 보조 정렬
+    });
+  if (finalMatches.length < 3) return null;
+  const [sf1, sf2, final] = finalMatches;
+  const winner = m => m.hs > m.as ? m.homeId : (m.hs < m.as ? m.awayId : null);
+  const loser  = m => m.hs > m.as ? m.awayId : (m.hs < m.as ? m.homeId : null);
+  const getTeam = id => s.teams.find(t => t.id === id);
+  const finalWinnerId = winner(final);
+  const finalLoserId  = loser(final);
+  const thirdIds = [loser(sf1), loser(sf2)].filter(Boolean);
+  const result = [];
+  if (finalWinnerId) {
+    const t = getTeam(finalWinnerId);
+    if (t) result.push({ rank: 1, teams: [t] });
+  }
+  if (finalLoserId) {
+    const t = getTeam(finalLoserId);
+    if (t) result.push({ rank: 2, teams: [t] });
+  }
+  const thirdTeams = thirdIds.map(getTeam).filter(Boolean);
+  if (thirdTeams.length) result.push({ rank: 3, teams: thirdTeams });
+  return result.length ? result : null;
+}
 /* ===== 운영진·심판 ===== */
 function addPerson() {
   const s = getState();
@@ -1290,21 +1326,30 @@ function renderDashboard() {
       </div>`;
     }).join('');
   }
+  // ★ 조별 리그 순위로 변경
+  const groups = [...new Set(s.teams.map(t => t.group).filter(Boolean))].sort();
   const top = document.getElementById('top-teams');
-  if (!standings.length) {
-    top.innerHTML='<div class="empty"><div class="ei">🏆</div>팀을 등록해 주세요.</div>';
+  if (!groups.length) {
+    top.innerHTML = '<div class="empty"><div class="ei">🏆</div>팀을 등록해 주세요.</div>';
   } else {
-    const medals = ['🥇','🥈','🥉','4위','5위'];
-    top.innerHTML = standings.slice(0,5).map((t,i) => `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f4ff;">
-        <span style="width:40px;text-align:center;">${medals[i]||''}</span>
-        <span style="flex:1;font-weight:700;">${t.name}</span>
-        <span style="font-size:0.8rem;color:var(--gray);">${t.P}경기 ${t.W}승${t.D}무${t.L}패</span>
-        <span style="font-weight:800;color:var(--blue);">${t.PTS}점</span>
-      </div>`).join('');
+    const medals = ['🥇','🥈','🥉'];
+    top.innerHTML = groups.map(g => {
+      const gs = calcStandings(g);
+      const rows = gs.length ? gs.map((t,i) => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f4ff;">
+          <span style="width:34px;text-align:center;">${medals[i] || (i+1)+'위'}</span>
+          <span style="flex:1;font-weight:700;">${t.name}</span>
+          <span style="font-size:0.78rem;color:var(--gray);">${t.P}경기 ${t.W}승${t.D}무${t.L}패</span>
+          <span style="font-weight:800;color:var(--blue);">${t.PTS}점</span>
+        </div>`).join('')
+        : '<div style="color:#bbb;font-size:0.85rem;padding:6px 0;">경기 기록 없음</div>';
+      return `<div style="margin-bottom:16px;">
+        <div style="font-size:0.85rem;font-weight:800;color:var(--gold);margin-bottom:4px;">🔹 ${g}조</div>
+        ${rows}
+      </div>`;
+    }).join('');
   }
 }
-
 /* ===== 득점왕 ===== */
 function renderTopScorer() {
   const s = getState();
