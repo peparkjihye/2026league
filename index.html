@@ -223,6 +223,7 @@
   <button class="sub-tab" onclick="showSection('teams')">👥 팀 관리</button>
   <button class="sub-tab" onclick="showSection('staff')">🦺 운영진·심판</button>
   <button class="sub-tab" onclick="showSection('topscorer')">⚽ 득점왕</button>
+  <button class="sub-tab" onclick="showSection('finals')">🏆 본선경기</button>
 </nav>
 <div class="container">
   <div id="sec-dashboard" class="section active">
@@ -242,6 +243,13 @@
     <div class="card">
       <h2>✏️ 경기 결과 입력</h2>
       <div class="form-row">
+        <div class="form-group" style="max-width:130px;">
+  <label>경기 단계</label>
+  <select id="inp-stage" onchange="updateSelects()">
+    <option value="group">조별리그</option>
+    <option value="final">본선진출전</option>
+  </select>
+</div>
         <div class="form-group" style="max-width:80px;">
           <label>조</label>
           <input type="text" id="inp-group" placeholder="A, B…">
@@ -422,6 +430,31 @@
     <div id="topscorer-list"></div>
   </div>
 </div>
+<div id="sec-finals" class="section">
+  <div class="card">
+    <h2>🏆 본선 진출팀 (조 1위)</h2>
+    <div id="finals-qualified-list"></div>
+  </div>
+  <div class="card">
+    <h2>📋 본선 경기 기록</h2>
+    <div id="finals-results-list"></div>
+  </div>
+  <div class="card">
+    <h2>🥇 본선 순위표</h2>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>순위</th><th>팀명</th><th>조(예선)</th><th>경기</th>
+            <th>승</th><th>무</th><th>패</th>
+            <th>득점</th><th>실점</th><th>득실</th><th>승점</th>
+          </tr>
+        </thead>
+        <tbody id="finals-standings-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>  
 <div class="toast" id="toast"></div>
 <script>
 /* ===== 백엔드 연결 설정 (★ 여기 URL을 본인 것으로 교체하세요!) ===== */
@@ -602,6 +635,7 @@ function showSection(name) {
   if (name === 'staff')       renderStaff();
   if (name === 'match-input') updateSelects();
   if (name === 'topscorer')   { updateTopScorerGroupFilter(); renderTopScorer(); }
+  if (name === 'finals')     renderFinals(); 
 }
 
 /* ===== 토스트 ===== */
@@ -736,11 +770,18 @@ function importTeamsFromExcel() {
 /* ===== 셀렉트/필터 ===== */
 function updateSelects() {
   const s = getState();
+  const stageSel = document.getElementById('inp-stage');
+  const stage = stageSel ? stageSel.value : 'group';
+  let teamPool = s.teams;
+  if (stage === 'final') {
+    const qualifiedIds = new Set(getQualifiedTeams().map(t => t.id));
+    teamPool = s.teams.filter(t => qualifiedIds.has(t.id));
+  }
   ['inp-home','inp-away'].forEach(id => {
     const sel = document.getElementById(id);
     if (!sel) return;
     const cur = sel.value;
-    sel.innerHTML = '<option value="">팀 선택</option>' + s.teams.map(t =>
+    sel.innerHTML = '<option value="">팀 선택</option>' + teamPool.map(t =>
       `<option value="${t.id}">${t.group ? '['+t.group+'조] ' : ''}${t.name}</option>`).join('');
     sel.value = cur;
   });
@@ -794,6 +835,7 @@ function addMatch() {
     group: document.getElementById('inp-group').value.trim().toUpperCase(),
     num: document.getElementById('inp-num').value.trim(),
     date: document.getElementById('inp-date').value,
+    stage: document.getElementById('inp-stage')?.value || 'group', 
     homeId, awayId, hs, as,
     hsub: parseInt(document.getElementById('inp-hsub').value) || 0,
     asub: parseInt(document.getElementById('inp-asub').value) || 0,
@@ -828,12 +870,15 @@ function addMatch() {
   renderStandings();
   renderDashboard();
   renderTopScorer();
+  renderFinals();
 }
 function resetMatchForm() {
   ['inp-group','inp-num','inp-staff','inp-ref','inp-ref2','inp-note'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
+  const stageEl = document.getElementById('inp-stage');
+  if (stageEl) stageEl.value = 'group';       
   ['inp-home','inp-away'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -845,6 +890,7 @@ function resetMatchForm() {
   const d = document.getElementById('inp-date');
   if (d) d.value = new Date().toISOString().slice(0,16);
   editingMatchId = null;
+  updateSelects();                              
   const saveBtn = document.querySelector('#sec-match-input .btn-primary');
   if (saveBtn) saveBtn.textContent = '💾 결과 저장';
 }
@@ -857,6 +903,7 @@ function removeMatch(id) {
   renderResults();
   renderStandings();
   renderDashboard();
+  renderFinals();   
   toast('🗑️ 경기 기록이 삭제되었습니다.');
 }
 function editMatch(id) {
@@ -868,6 +915,8 @@ function editMatch(id) {
   document.getElementById('inp-group').value = m.group || '';
   document.getElementById('inp-num').value = m.num || '';
   document.getElementById('inp-date').value = m.date || new Date().toISOString().slice(0,16);
+  document.getElementById('inp-stage').value = m.stage || 'group';
+  updateSelects();  
   document.getElementById('inp-home').value = m.homeId;
   document.getElementById('inp-away').value = m.awayId;
   document.getElementById('inp-hscore').value = m.hs;
@@ -882,7 +931,84 @@ function editMatch(id) {
   if (saveBtn) saveBtn.textContent = '✅ 수정 완료';
   showSection('match-input');
 }
+function renderFinals() {
+  const s = getState();
+  const qualified = getQualifiedTeams();
 
+  const qBox = document.getElementById('finals-qualified-list');
+  if (qBox) {
+    if (!qualified.length) {
+      qBox.innerHTML = '<div class="empty"><div class="ei">🏆</div>아직 조별리그 순위가 확정되지 않았습니다.</div>';
+    } else {
+      qBox.innerHTML = qualified.map(t => `
+        <span class="person-chip" style="background:#fff7e6;color:#b45309;">
+          <span style="width:10px;height:10px;border-radius:50%;background:${t.color};display:inline-block;"></span>
+          [${t.group}조 1위] ${t.name}
+        </span>`).join('');
+    }
+  }
+
+  const finalMatches = [...s.matches]
+    .filter(m => (m.stage || 'group') === 'final')
+    .sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  const rBox = document.getElementById('finals-results-list');
+  if (rBox) {
+    if (!finalMatches.length) {
+      rBox.innerHTML = '<div class="empty"><div class="ei">🏟️</div>본선 경기 기록이 없습니다.</div>';
+    } else {
+      rBox.innerHTML = finalMatches.map(m => {
+        const home = s.teams.find(t => t.id === m.homeId);
+        const away = s.teams.find(t => t.id === m.awayId);
+        if (!home || !away) return '';
+        const dateStr = m.date ? m.date.replace('T',' ') : '일정 미정';
+        return `<div class="match-card">
+          <div class="match-header">
+            <span class="match-group-badge">본선</span>
+            ${m.num ? `<span class="match-round-badge">${m.num}경기</span>` : ''}
+            <span class="match-date-text">🗓 ${dateStr}</span>
+          </div>
+          <div class="match-body">
+            <span class="match-team home" style="color:${home.color||'#222'}">${home.name}</span>
+            <span class="match-score">${m.hs} : ${m.as}</span>
+            <span class="match-team away" style="color:${away.color||'#222'}">${away.name}</span>
+          </div>
+          <div class="match-meta">
+            ${m.staff?`<span>🦺 운영진: ${m.staff}</span>`:''}
+            ${m.ref?`<span>🟡 주심: ${m.ref}</span>`:''}
+            ${m.ref2?`<span>🟠 부심: ${m.ref2}</span>`:''}
+            ${m.note?`<span>📝 ${m.note}</span>`:''}
+          </div>
+          <div class="match-footer">
+            <button class="btn-sm" style="background:#e0f2fe;color:var(--blue);border-radius:6px;border:none;cursor:pointer;margin-right:6px;" onclick="editMatch(${m.id})">📝 수정</button>
+            <button class="btn-danger" onclick="removeMatch(${m.id})">🗑 삭제</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  const standings = calcFinalStandings();
+  const tbody = document.getElementById('finals-standings-body');
+  if (tbody) {
+    if (!standings.length) {
+      tbody.innerHTML = '<tr><td colspan="11"><div class="empty"><div class="ei">📋</div>본선 진출팀이 없습니다.</div></td></tr>';
+    } else {
+      tbody.innerHTML = standings.map((t,i) => {
+        const cls = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+        const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+        return `<tr>
+          <td><span class="rank-badge ${cls}">${medal}</span></td>
+          <td><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${t.color};margin-right:6px;"></span>${t.name}</td>
+          <td>${t.group||'-'}</td><td>${t.P}</td>
+          <td class="w">${t.W}</td><td class="d">${t.D}</td><td class="l">${t.L}</td>
+          <td>${t.GF}</td><td>${t.GA}</td>
+          <td style="color:${t.GF-t.GA>=0?'var(--green)':'var(--red)'};">${t.GF-t.GA>0?'+':''}${t.GF-t.GA}</td>
+          <td class="pts">${t.PTS}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
 /* ===== 순위 계산 ===== */
 function calcStandings(filterGroup) {
   const s = getState();
@@ -903,6 +1029,7 @@ function calcStandings(filterGroup) {
     };
   });
   s.matches.forEach(m => {
+    if ((m.stage || 'group') !== stage) return; 
     if (!stats[m.homeId] || !stats[m.awayId]) return;
     if (filterGroup &&
         (stats[m.homeId].group !== filterGroup || stats[m.awayId].group !== filterGroup)) {
@@ -1047,7 +1174,44 @@ function clearFilter() {
   document.getElementById('filter-team-text').value = '';
   renderResults();
 }
+function getQualifiedTeams() {
+  const s = getState();
+  const groups = [...new Set(s.teams.map(t => t.group).filter(Boolean))].sort();
+  const qualified = [];
+  groups.forEach(g => {
+    const standings = calcStandings(g, 'group');
+    if (standings.length) qualified.push(standings[0]); // 조 1위
+  });
+  return qualified;
+}
 
+function calcFinalStandings() {
+  const s = getState();
+  const qualifiedIds = new Set(getQualifiedTeams().map(t => t.id));
+  const stats = {};
+  s.teams.filter(t => qualifiedIds.has(t.id)).forEach(t => {
+    stats[t.id] = { id:t.id, name:t.name, group:t.group, color:t.color,
+      P:0,W:0,D:0,L:0,GF:0,GA:0,PTS:0,SUB:0 };
+  });
+  s.matches.forEach(m => {
+    if ((m.stage||'group') !== 'final') return;
+    if (!stats[m.homeId] || !stats[m.awayId]) return;
+    const h = stats[m.homeId], a = stats[m.awayId];
+    h.P++; a.P++;
+    h.GF+=m.hs; h.GA+=m.as; a.GF+=m.as; a.GA+=m.hs;
+    h.SUB += (m.hsub||0); a.SUB += (m.asub||0);
+    if (m.hs>m.as){h.W++;h.PTS+=3;a.L++;}
+    else if (m.hs<m.as){a.W++;a.PTS+=3;h.L++;}
+    else {h.D++;a.D++;h.PTS++;a.PTS++;}
+  });
+  return Object.values(stats).sort((a,b) => {
+    if (b.PTS !== a.PTS) return b.PTS - a.PTS;
+    const gdA=a.GF-a.GA, gdB=b.GF-b.GA;
+    if (gdB!==gdA) return gdB-gdA;
+    if (b.GF!==a.GF) return b.GF-a.GF;
+    return a.name.localeCompare(b.name);
+  });
+}
 /* ===== 운영진·심판 ===== */
 function addPerson() {
   const s = getState();
@@ -1197,6 +1361,7 @@ function renderAll() {
   updateTopScorerGroupFilter();
   updateSelects();
   updateAdminUI();
+  renderFinals();  
 }
 
 /* ===== 초기 설정 ===== */
