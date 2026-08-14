@@ -18,8 +18,6 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; background: var(--bg); color: #222; }
-
-  /* ── 헤더 ── */
   .main-header {
     background: linear-gradient(135deg, var(--navy), var(--blue), var(--sky));
     color: white; padding: 20px 32px;
@@ -39,8 +37,6 @@
     background: var(--gold); color: #000; font-size: 0.8rem;
     font-weight: 800; padding: 6px 16px; border-radius: 20px;
   }
-
-  /* ── 학년 탭 ── */
   .grade-tabs {
     display: flex; background: var(--navy); padding: 0 32px; gap: 4px;
   }
@@ -52,8 +48,6 @@
   }
   .grade-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
   .grade-tab:hover:not(.active) { color: white; }
-
-  /* ── 서브 탭 ── */
   .sub-nav {
     background: white; display: flex; flex-wrap: wrap;
     border-bottom: 2px solid var(--border); padding: 0 24px; gap: 2px;
@@ -65,13 +59,9 @@
   }
   .sub-tab.active { color: var(--blue); border-bottom-color: var(--blue); font-weight: 700; }
   .sub-tab:hover:not(.active) { color: var(--blue); background: #f0f4ff; }
-
-  /* ── 메인 컨테이너 ── */
   .container { max-width: 1100px; margin: 28px auto; padding: 0 20px; }
   .section { display: none; }
   .section.active { display: block; }
-
-  /* ── 카드 ── */
   .card {
     background: white; border-radius: 14px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.07);
@@ -82,8 +72,6 @@
     border-left: 4px solid var(--gold); padding-left: 10px;
     display: flex; align-items: center; gap: 8px;
   }
-
-  /* ── 폼 ── */
   .form-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
   .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 130px; }
   label { font-size: 0.8rem; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
@@ -94,8 +82,6 @@
   }
   input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,60,143,0.1); }
   textarea { resize: vertical; min-height: 70px; }
-
-  /* ── 버튼 ── */
   .btn {
     padding: 9px 20px; border: none; border-radius: 8px;
     cursor: pointer; font-size: 0.92rem; font-weight: 700;
@@ -110,8 +96,6 @@
     padding: 4px 10px; border-radius: 6px; cursor: pointer;
   }
   .btn-danger:hover { background: #fecaca; }
-
-  /* ── 순위표 ── */
   table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
   thead th {
     background: var(--blue); color: white; padding: 11px 10px;
@@ -121,7 +105,6 @@
   tbody td { padding: 11px 10px; text-align: center; border-bottom: 1px solid #f0f4ff; }
   tbody td:nth-child(2) { text-align: left; padding-left: 14px; font-weight: 600; }
   tbody tr:hover { background: #f8f9ff; }
-
   .rank-badge {
     display: inline-flex; width: 26px; height: 26px; border-radius: 50%;
     align-items: center; justify-content: center; font-weight: 800; font-size: 0.82rem;
@@ -134,8 +117,6 @@
   .w { color: var(--green); font-weight: 700; }
   .d { color: var(--gold); font-weight: 600; }
   .l { color: var(--red); font-weight: 600; }
-
-  /* ── 경기 카드 ── */
   .match-card {
     background: #f8faff; border: 1px solid var(--border);
     border-radius: 10px; padding: 14px 18px; margin-bottom: 10px;
@@ -162,8 +143,6 @@
   .match-meta { font-size: 0.78rem; color: var(--gray); margin-top: 8px; display: flex; gap: 16px; flex-wrap: wrap; }
   .match-meta span { display: flex; align-items: center; gap: 4px; }
   .match-footer { display: flex; justify-content: flex-end; margin-top: 8px; }
-
-  /* ── 요약 카드 ── */
   .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 14px; margin-bottom: 22px; }
   .stat-card {
     background: white; border-radius: 12px; padding: 18px; text-align: center;
@@ -173,8 +152,6 @@
   .stat-card.green { border-top-color: var(--green); }
   .stat-val { font-size: 2rem; font-weight: 800; color: var(--navy); }
   .stat-lbl { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
-
-  /* ── 인원 관리 ── */
   .person-chip {
     display: inline-flex; align-items: center; gap: 8px;
     background: #e8eeff; color: var(--blue);
@@ -188,8 +165,6 @@
   .person-section { display: flex; gap: 20px; flex-wrap: wrap; }
   .person-box { flex: 1; min-width: 240px; }
   .person-box h3 { font-size: 0.9rem; color: var(--gray); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-  /* ── 토스트 ── */
   .toast {
     position: fixed; bottom: 24px; right: 24px; z-index: 999;
     background: var(--navy); color: white; padding: 12px 22px;
@@ -198,18 +173,13 @@
     transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none;
   }
   .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* ── 필터 ── */
   .filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
   .filter-row select, .filter-row input {
     padding: 8px 12px; border: 1.5px solid var(--border);
     border-radius: 8px; font-size: 0.87rem; outline: none;
   }
-
-  /* ── 빈 상태 ── */
   .empty { text-align: center; padding: 40px; color: #aaa; }
   .empty .ei { font-size: 2.5rem; margin-bottom: 10px; }
-
   @media(max-width:600px){
     .main-header { flex-direction: column; gap: 12px; align-items: flex-start; }
     .match-body { flex-direction: column; }
@@ -217,17 +187,9 @@
     .person-section { flex-direction: column; }
   }
 </style>
-<head>
-  ...
-  <style>...</style>
-
-  <!-- ▼ XLSX 라이브러리: 엑셀 파일 읽기용 -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- ▲ XLSX 라이브러리 -->
-
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-
 <header class="main-header">
   <div class="logo">
     <div class="emblem">🐉</div>
@@ -239,7 +201,6 @@
   </div>
   <div style="display:flex; align-items:center; gap:10px;">
     <div class="event-badge">⚽ 2026 시즌</div>
-    <!-- ★ 새 관리자 로그인 버튼 -->
     <button
       type="button"
       class="btn btn-sm"
@@ -250,13 +211,10 @@
     </button>
   </div>
 </header>
-<!-- 학년 탭 -->
 <div class="grade-tabs">
   <button class="grade-tab active" onclick="switchGrade(1, this)">🔵 1학년 리그</button>
   <button class="grade-tab" onclick="switchGrade(2, this)">🔴 2학년 리그</button>
 </div>
-
-<!-- 서브 탭 -->
 <nav class="sub-nav">
   <button class="sub-tab active" onclick="showSection('dashboard')">📊 대시보드</button>
   <button class="sub-tab" onclick="showSection('match-input')">✏️ 경기 입력</button>
@@ -266,10 +224,7 @@
   <button class="sub-tab" onclick="showSection('staff')">🦺 운영진·심판</button>
   <button class="sub-tab" onclick="showSection('topscorer')">⚽ 득점왕</button>
 </nav>
-
 <div class="container">
-
-  <!-- 대시보드 -->
   <div id="sec-dashboard" class="section active">
     <div class="stat-row" id="stat-row"></div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
@@ -283,8 +238,6 @@
       </div>
     </div>
   </div>
-
-  <!-- 경기 입력 -->
   <div id="sec-match-input" class="section">
     <div class="card">
       <h2>✏️ 경기 결과 입력</h2>
@@ -355,8 +308,6 @@
       </div>
     </div>
   </div>
-
-  <!-- 순위표 -->
   <div id="sec-standings" class="section">
     <div class="card">
       <h2>🏆 조별 순위표</h2>
@@ -380,8 +331,6 @@
       <p style="font-size:0.78rem;color:var(--gray);margin-top:10px;">※ 승 3점 / 무 1점 / 패 0점 기준</p>
     </div>
   </div>
-
-  <!-- 경기 기록 -->
   <div id="sec-results" class="section">
     <div class="card">
       <h2>📋 전체 경기 기록</h2>
@@ -396,8 +345,6 @@
       <div id="results-list"></div>
     </div>
   </div>
-
-  <!-- 팀 관리 -->
   <div id="sec-teams" class="section">
     <div class="card">
       <h2>👥 팀 등록</h2>
@@ -419,8 +366,6 @@
       <div id="team-list" style="margin-top:14px;"></div>
     </div>
   </div>
-
-       <!-- ▼ 관리자 전용: 엑셀 업로드 구역 -->
     <div id="excel-upload-wrapper">
       <hr style="margin:16px 0; border:none; border-top:1px dashed #e5e7eb;">
       <div class="form-row">
@@ -431,9 +376,6 @@
         <button class="btn btn-sm" style="align-self:flex-end;" onclick="importTeamsFromExcel()">엑셀에서 불러오기</button>
       </div>
     </div>
-    <!-- ▲ 관리자 전용: 엑셀 업로드 구역 -->
-
-  <!-- 운영진·심판 -->
   <div id="sec-staff" class="section">
     <div class="card">
       <h2>🦺 운영진 · 심판 명단</h2>
@@ -468,9 +410,7 @@
       </div>
     </div>
   </div>
-
 </div>
-
 <div id="sec-topscorer" class="section">
   <div class="card">
     <h2>⚽ 득점왕 / 득점 통계</h2>
@@ -482,40 +422,67 @@
     <div id="topscorer-list"></div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
+/* ===== 백엔드 연결 설정 (★ 여기 URL을 본인 것으로 교체하세요!) ===== */
+const SCRIPT_URL = 'https://script.google.com/macros/s/여기에_배포ID/exec';
+
 /* ===== 전역 상태 ===== */
-let currentGrade = 1;          // 1학년 / 2학년
-let editingMatchId = null;     // 수정 중인 경기 ID
-const ADMIN_PASSWORD = '2026'; // 관리자 비밀번호
+let currentGrade = 1;
+let editingMatchId = null;
+const ADMIN_PASSWORD = '2026';
+let stateCache = {}; // 학년별 데이터 캐시: { 1: {...}, 2: {...} }
 
-/* ===== 공통 상태 ===== */
+/* ===== 공통 상태 (서버 연동) ===== */
 function getState() {
-  const key = 'chungryong_g' + currentGrade;
-  const raw = localStorage.getItem(key);
-  if (raw) return JSON.parse(raw);
-  return { teams: [], matches: [], staff: [] };
+  return stateCache[currentGrade] || { teams: [], matches: [], staff: [] };
 }
-
 function setState(s) {
-  localStorage.setItem('chungryong_g' + currentGrade, JSON.stringify(s));
+  stateCache[currentGrade] = s;
+  saveStateToServer(currentGrade, s);
+}
+async function loadStateFromServer(grade) {
+  try {
+    const res = await fetch(`${SCRIPT_URL}?key=chungryong_g${grade}`);
+    const data = await res.json();
+    if (data && !data.error) {
+      stateCache[grade] = {
+        teams: data.teams || [],
+        matches: data.matches || [],
+        staff: data.staff || []
+      };
+    } else {
+      stateCache[grade] = { teams: [], matches: [], staff: [] };
+    }
+  } catch (err) {
+    console.error('데이터 로드 실패:', err);
+    stateCache[grade] = stateCache[grade] || { teams: [], matches: [], staff: [] };
+    toast('⚠️ 서버 연결 실패. 인터넷 상태를 확인해 주세요.');
+  }
+}
+async function saveStateToServer(grade, state) {
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ key: `chungryong_g${grade}`, value: state })
+    });
+  } catch (err) {
+    console.error('저장 실패:', err);
+    toast('⚠️ 서버 저장 실패. 다시 시도해 주세요.');
+  }
 }
 
 /* ===== 관리자 모드 ===== */
 function isAdmin() {
   return localStorage.getItem('chungryong_admin') === 'true';
 }
-
 function setAdmin(flag) {
   if (flag) localStorage.setItem('chungryong_admin', 'true');
   else localStorage.removeItem('chungryong_admin');
   updateAdminUI();
   updateAdminButton();
 }
-
-// 비밀번호 확인
 function ensureAdmin() {
   if (isAdmin()) return true;
   const pwd = prompt('관리자 비밀번호를 입력하세요.');
@@ -528,8 +495,6 @@ function ensureAdmin() {
     return false;
   }
 }
-
-// 상단 버튼 (로그인/로그아웃) 상태 갱신
 function updateAdminButton() {
   const btn = document.querySelector('button[onclick*="onAdminLoginClick"]');
   if (!btn) return;
@@ -543,10 +508,7 @@ function updateAdminButton() {
     btn.style.color = '#111827';
   }
 }
-
-// 경기 입력 카드 활성/비활성
 function updateAdminUI() {
-  // 1) 경기 입력 카드 (기존 로직)
   const matchCard = document.querySelector('#sec-match-input .card');
   if (matchCard) {
     if (isAdmin()) {
@@ -568,15 +530,11 @@ function updateAdminUI() {
       }
     }
   }
-
-  // 2) 팀 관리 엑셀 업로드 영역 표시/숨기기
   const excelWrap = document.getElementById('excel-upload-wrapper');
   if (excelWrap) {
     excelWrap.style.display = isAdmin() ? 'block' : 'none';
   }
 }
-
-// 상단 버튼 클릭: 로그인/로그아웃 토글
 function onAdminLoginClick(e) {
   e.stopPropagation();
   if (isAdmin()) {
@@ -590,30 +548,30 @@ function onAdminLoginClick(e) {
 }
 
 /* ===== 학년 전환 & 섹션 전환 ===== */
-function switchGrade(grade, el) {
+async function switchGrade(grade, el) {
   currentGrade = grade;
   document.querySelectorAll('.grade-tab').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
+
+  if (!stateCache[grade]) {
+    toast('⏳ 데이터를 불러오는 중...');
+    await loadStateFromServer(grade);
+  }
+
   renderAll();
   updateSelects();
   showSection('dashboard');
   document.querySelectorAll('.sub-tab').forEach((b, i) => b.classList.toggle('active', i === 0));
 }
-
 function showSection(name) {
-  // 섹션 표시
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   const sec = document.getElementById('sec-' + name);
   if (sec) sec.classList.add('active');
-
-  // 서브탭 active 처리
   document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.sub-tab').forEach(btn => {
     const onclick = btn.getAttribute('onclick') || '';
     if (onclick.includes("'" + name + "'")) btn.classList.add('active');
   });
-
-  // 탭별 렌더링
   if (name === 'dashboard')   renderDashboard();
   if (name === 'standings')   { renderStandings(); updateGroupFilter('filter-group-standing'); }
   if (name === 'results')     { renderResults(); updateGroupFilter('filter-group'); updateSelects(); }
@@ -646,7 +604,6 @@ function addTeam() {
   renderTeams(); updateSelects();
   toast('✅ ' + name + ' 팀이 등록되었습니다!');
 }
-
 function removeTeam(id) {
   if (!confirm('팀을 삭제하면 해당 팀의 경기 기록도 삭제됩니다.')) return;
   const s = getState();
@@ -655,7 +612,6 @@ function removeTeam(id) {
   setState(s); renderTeams(); updateSelects();
   toast('🗑️ 팀이 삭제되었습니다.');
 }
-
 function renderTeams() {
   const s = getState();
   const el = document.getElementById('team-list');
@@ -674,104 +630,78 @@ function renderTeams() {
     </div>`).join('');
 }
 
-/* ===== 엑셀에서 팀 명단 가져오기 (조 / 팀이름, 1행 헤더) ===== */
+/* ===== 엑셀에서 팀 명단 가져오기 ===== */
 function importTeamsFromExcel() {
-  // 관리자만 가능
   if (!isAdmin() && !ensureAdmin()) return;
-
   const input = document.getElementById('team-upload-file');
   if (!input || !input.files || !input.files[0]) {
     toast('엑셀 파일을 먼저 선택해 주세요.');
     return;
   }
   const file = input.files[0];
-
-  // XLSX 라이브러리 존재 여부 확인
   if (typeof XLSX === 'undefined') {
     console.error('XLSX 라이브러리가 로드되지 않았습니다.');
     toast('엑셀 라이브러리를 불러오지 못했습니다. 인터넷 연결 또는 스크립트 경로를 확인해 주세요.');
     return;
   }
-
   const reader = new FileReader();
-
   reader.onload = function(e) {
     try {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: 'array' });
-
       if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
         toast('엑셀 파일에 시트가 없습니다.');
         return;
       }
-
-      const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 사용
+      const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-
       if (!sheet) {
         toast('엑셀 시트를 읽지 못했습니다.');
         return;
       }
-
-      // header: 1 → 2차원 배열: [ [조, 팀이름], [A, 1-1반], ... ]
       const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
       if (!rows || !rows.length) {
         toast('시트에 데이터가 없습니다.');
         return;
       }
-
-      const s = getState();  // 현재 currentGrade에 해당하는 상태
+      const s = getState();
       const newTeams = [];
-
       rows.slice(1).forEach((row, idx) => {
         if (!row || row.length < 2) return;
-
         const groupRaw = (row[0] || '').toString().trim();
         const nameRaw  = (row[1] || '').toString().trim();
-
-        if (!nameRaw) return; // 팀 이름 없으면 스킵
-
+        if (!nameRaw) return;
         const group = groupRaw.toUpperCase();
         const name  = nameRaw;
-
-        // 이미 같은 이름 팀이 있으면 건너뛰기
         if (s.teams.find(t => t.name === name)) return;
-
         newTeams.push({
           id: Date.now() + idx,
           name,
           group,
-          color: '#1a3c8f'   // 기본 색상
+          color: '#1a3c8f'
         });
       });
-
       if (!newTeams.length) {
         toast('추가할 팀 데이터가 없습니다. 엑셀 형식을 다시 확인해 주세요.');
         return;
       }
-
       s.teams = s.teams.concat(newTeams);
       setState(s);
-
       renderTeams();
       updateSelects();
       updateGroupFilter('filter-group-standing');
       updateGroupFilter('filter-group');
       updateTopScorerGroupFilter();
-
       toast(`✅ ${currentGrade}학년 리그에 엑셀에서 ${newTeams.length}개 팀을 불러왔습니다.`);
     } catch (err) {
       console.error('엑셀 파싱 에러:', err);
       toast('엑셀 파일을 처리하는 중 오류가 발생했습니다.');
     }
   };
-
   reader.onerror = function(err) {
     console.error('FileReader 에러:', err);
     toast('엑셀 파일을 읽는 중 오류가 발생했습니다.');
   };
-
   reader.readAsArrayBuffer(file);
 }
 
@@ -787,7 +717,6 @@ function updateSelects() {
     sel.value = cur;
   });
 }
-
 function updateGroupFilter(id) {
   const s = getState();
   const groups = [...new Set(s.teams.map(t => t.group).filter(Boolean))].sort();
@@ -802,33 +731,27 @@ function updateGroupFilter(id) {
 /* ===== 경기 추가/수정 ===== */
 function addMatch() {
   if (!isAdmin() && !ensureAdmin()) return;
-
   const s = getState();
   const homeId = parseInt(document.getElementById('inp-home').value);
   const awayId = parseInt(document.getElementById('inp-away').value);
   if (!homeId || !awayId) return toast('홈팀과 원정팀을 선택해 주세요.');
   if (homeId === awayId) return toast('같은 팀끼리는 경기할 수 없습니다.');
-
   const hs = parseInt(document.getElementById('inp-hscore').value) || 0;
   const as = parseInt(document.getElementById('inp-ascore').value) || 0;
-
   const noteText = document.getElementById('inp-note').value.trim();
-
-  // noteText에서 득점자 정보 파싱
-  // 예: "2반: 양연재(2), 김민수(1)\n3반: 이철수(1)"
   const scorers = [];
   if (noteText) {
     noteText.split('\n').forEach(line => {
       const row = line.trim();
       if (!row) return;
-      const idx = row.indexOf(':');   // "2반: ..."
+      const idx = row.indexOf(':');
       if (idx === -1) return;
       const team = row.slice(0, idx).trim();
       const rest = row.slice(idx + 1).trim();
       if (!rest) return;
       rest.split(',').forEach(part => {
         const txt = part.trim();
-        const m = txt.match(/^(.+)\(([0-9]+)\)$/); // "양연재(2)"
+        const m = txt.match(/^(.+)\(([0-9]+)\)$/);
         if (m) {
           scorers.push({
             name: m[1].trim(),
@@ -839,7 +762,6 @@ function addMatch() {
       });
     });
   }
-
   const matchData = {
     group: document.getElementById('inp-group').value.trim().toUpperCase(),
     num: document.getElementById('inp-num').value.trim(),
@@ -853,7 +775,6 @@ function addMatch() {
     note: noteText,
     scorers
   };
-
   if (editingMatchId) {
     const idx = s.matches.findIndex(m => m.id === editingMatchId);
     if (idx !== -1) {
@@ -870,19 +791,16 @@ function addMatch() {
     s.matches.push(matchData);
     toast('⚽ 경기 결과가 저장되었습니다!');
   }
-
   setState(s);
   editingMatchId = null;
   const saveBtn = document.querySelector('#sec-match-input .btn-primary');
   if (saveBtn) saveBtn.textContent = '💾 결과 저장';
-
   resetMatchForm();
   renderResults();
   renderStandings();
   renderDashboard();
   renderTopScorer();
 }
-
 function resetMatchForm() {
   ['inp-group','inp-num','inp-staff','inp-ref','inp-ref2','inp-note'].forEach(id => {
     const el = document.getElementById(id);
@@ -898,12 +816,10 @@ function resetMatchForm() {
   });
   const d = document.getElementById('inp-date');
   if (d) d.value = new Date().toISOString().slice(0,16);
-
   editingMatchId = null;
   const saveBtn = document.querySelector('#sec-match-input .btn-primary');
   if (saveBtn) saveBtn.textContent = '💾 결과 저장';
 }
-
 function removeMatch(id) {
   if (!isAdmin() && !ensureAdmin()) return;
   if (!confirm('이 경기 기록을 삭제하시겠습니까?')) return;
@@ -915,15 +831,12 @@ function removeMatch(id) {
   renderDashboard();
   toast('🗑️ 경기 기록이 삭제되었습니다.');
 }
-
 function editMatch(id) {
   if (!isAdmin() && !ensureAdmin()) return;
   const s = getState();
   const m = s.matches.find(x => x.id === id);
   if (!m) return toast('경기 정보를 찾을 수 없습니다.');
-
   editingMatchId = id;
-
   document.getElementById('inp-group').value = m.group || '';
   document.getElementById('inp-num').value = m.num || '';
   document.getElementById('inp-date').value = m.date || new Date().toISOString().slice(0,16);
@@ -937,10 +850,8 @@ function editMatch(id) {
   document.getElementById('inp-ref').value = m.ref || '';
   document.getElementById('inp-ref2').value = m.ref2 || '';
   document.getElementById('inp-note').value = m.note || '';
-
   const saveBtn = document.querySelector('#sec-match-input .btn-primary');
   if (saveBtn) saveBtn.textContent = '✅ 수정 완료';
-
   showSection('match-input');
 }
 
@@ -951,7 +862,6 @@ function calcStandings(filterGroup) {
   const targetTeams = filterGroup
     ? s.teams.filter(t => t.group === filterGroup)
     : s.teams;
-
   targetTeams.forEach(t => {
     stats[t.id] = {
       id: t.id,
@@ -964,7 +874,6 @@ function calcStandings(filterGroup) {
       SUB: 0
     };
   });
-
   s.matches.forEach(m => {
     if (!stats[m.homeId] || !stats[m.awayId]) return;
     if (filterGroup &&
@@ -973,14 +882,11 @@ function calcStandings(filterGroup) {
     }
     const h = stats[m.homeId];
     const a = stats[m.awayId];
-
     h.P++; a.P++;
     h.GF += m.hs; h.GA += m.as;
     a.GF += m.as; a.GA += m.hs;
-
     h.SUB += (m.hsub || 0);
     a.SUB += (m.asub || 0);
-
     if (m.hs > m.as) {
       h.W++; h.PTS += 3; a.L++;
     } else if (m.hs < m.as) {
@@ -989,19 +895,15 @@ function calcStandings(filterGroup) {
       h.D++; a.D++; h.PTS++; a.PTS++;
     }
   });
-
   const list = Object.values(stats);
-
   function headToHead(a, b) {
     const h2h = getState().matches.filter(m =>
       (m.homeId === a.id && m.awayId === b.id) ||
       (m.homeId === b.id && m.awayId === a.id)
     );
     if (!h2h.length) return 0;
-
     let aPTS = 0, aGD = 0, aGF = 0;
     let bPTS = 0, bGD = 0, bGF = 0;
-
     h2h.forEach(m => {
       let ah, aa;
       if (m.homeId === a.id) {
@@ -1011,21 +913,17 @@ function calcStandings(filterGroup) {
       }
       const bh = aa;
       const ba = ah;
-
       aGF += ah; aGD += (ah - aa);
       bGF += bh; bGD += (bh - ba);
-
       if (ah > aa) aPTS += 3;
       else if (ah < aa) bPTS += 3;
       else { aPTS += 1; bPTS += 1; }
     });
-
     if (aPTS !== bPTS) return aPTS > bPTS ? -1 : 1;
     if (aGD  !== bGD ) return aGD  > bGD  ? -1 : 1;
     if (aGF  !== bGF ) return aGF  > bGF  ? -1 : 1;
     return 0;
   }
-
   list.sort((a, b) => {
     if (b.PTS !== a.PTS) return b.PTS - a.PTS;
     if (b.SUB !== a.SUB) return b.SUB - a.SUB;
@@ -1039,7 +937,6 @@ function calcStandings(filterGroup) {
     if (a.name > b.name) return 1;
     return 0;
   });
-
   return list;
 }
 
@@ -1117,7 +1014,6 @@ function renderResults() {
     </div>`;
   }).join('');
 }
-
 function clearFilter() {
   document.getElementById('filter-group').value = '';
   document.getElementById('filter-team-text').value = '';
@@ -1136,13 +1032,11 @@ function addPerson() {
   renderStaff();
   toast('✅ ' + name + ' 님이 등록되었습니다!');
 }
-
 function removePerson(id) {
   const s = getState();
   s.staff = s.staff.filter(p => p.id !== id);
   setState(s); renderStaff();
 }
-
 function renderStaff() {
   const s = getState();
   const roles = { operator:'list-operator', referee:'list-referee', assistant:'list-assistant' };
@@ -1202,7 +1096,6 @@ function renderDashboard() {
 function renderTopScorer() {
   const s = getState();
   const filterGroup = document.getElementById('filter-group-topscorer')?.value || '';
-
   const scorerMap = {};
   s.matches.forEach(m => {
     if (filterGroup && m.group !== filterGroup) return;
@@ -1216,7 +1109,6 @@ function renderTopScorer() {
       scorerMap[key].matches += 1;
     });
   });
-
   const list = Object.values(scorerMap).sort((a, b) => {
     if (b.goals !== a.goals) return b.goals - a.goals;
     if (a.matches !== b.matches) return a.matches - b.matches;
@@ -1224,13 +1116,11 @@ function renderTopScorer() {
     if (a.name > b.name) return 1;
     return 0;
   });
-
   const box = document.getElementById('topscorer-list');
   if (!list.length) {
     box.innerHTML = '<div class="empty"><div class="ei">⚽</div>득점 기록이 없습니다.</div>';
     return;
   }
-
   box.innerHTML = `
     <table>
       <thead>
@@ -1256,7 +1146,6 @@ function renderTopScorer() {
     </table>
   `;
 }
-
 function updateTopScorerGroupFilter() {
   const s = getState();
   const groups = [...new Set(s.teams.map(t => t.group).filter(Boolean))].sort();
@@ -1283,11 +1172,13 @@ function renderAll() {
 }
 
 /* ===== 초기 설정 ===== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const d = document.getElementById('inp-date');
   if (d && !d.value) {
     d.value = new Date().toISOString().slice(0,16);
   }
+  toast('⏳ 데이터를 불러오는 중...');
+  await loadStateFromServer(currentGrade);
   renderAll();
   updateAdminButton();
 });
