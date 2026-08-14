@@ -591,6 +591,8 @@ function toast(msg) {
 
 /* ===== 팀 관리 ===== */
 function addTeam() {
+  if (!isAdmin()) return toast('⚠️ 관리자만 팀을 등록할 수 있습니다.');
+  
   const s = getState();
   const name = document.getElementById('new-team-name').value.trim();
   const group = document.getElementById('new-team-group').value.trim().toUpperCase();
@@ -604,7 +606,10 @@ function addTeam() {
   renderTeams(); updateSelects();
   toast('✅ ' + name + ' 팀이 등록되었습니다!');
 }
+
 function removeTeam(id) {
+  if (!isAdmin()) return toast('⚠️ 관리자만 팀을 삭제할 수 있습니다.');
+  
   if (!confirm('팀을 삭제하면 해당 팀의 경기 기록도 삭제됩니다.')) return;
   const s = getState();
   s.teams = s.teams.filter(t => t.id !== id);
