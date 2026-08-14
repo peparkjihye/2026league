@@ -1011,7 +1011,7 @@ function renderFinals() {
   }
 }
 /* ===== 순위 계산 ===== */
-function calcStandings(filterGroup) {
+function calcStandings(filterGroup, stage = 'group') {
   const s = getState();
   const stats = {};
   const targetTeams = filterGroup
@@ -1054,6 +1054,7 @@ function calcStandings(filterGroup) {
   const list = Object.values(stats);
   function headToHead(a, b) {
     const h2h = getState().matches.filter(m =>
+      (m.stage || 'group') === stage &&
       (m.homeId === a.id && m.awayId === b.id) ||
       (m.homeId === b.id && m.awayId === a.id)
     );
