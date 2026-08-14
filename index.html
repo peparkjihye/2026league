@@ -217,10 +217,10 @@
 </div>
 <nav class="sub-nav">
   <button class="sub-tab active" onclick="showSection('dashboard')">📊 대시보드</button>
-  <button class="sub-tab" onclick="showSection('match-input')">✏️ 경기 입력</button>
+  <button class="sub-tab" id="tab-match-input" style="display:none;" onclick="showSection('match-input')">✏️ 경기 입력</button>
   <button class="sub-tab" onclick="showSection('standings')">🏆 순위표</button>
   <button class="sub-tab" onclick="showSection('results')">📋 경기 기록</button>
-  <button class="sub-tab" onclick="showSection('teams')">👥 팀 관리</button>
+  <button class="sub-tab" id="tab-teams" style="display:none;" onclick="showSection('teams')">👥 팀 관리</button>
   <button class="sub-tab" onclick="showSection('staff')">🦺 운영진·심판</button>
   <button class="sub-tab" onclick="showSection('topscorer')">⚽ 득점왕</button>
   <button class="sub-tab" onclick="showSection('finals')">🏆 본선경기</button>
