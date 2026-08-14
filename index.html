@@ -374,17 +374,18 @@
       <div id="team-list" style="margin-top:14px;"></div>
     </div>
   </div>
-    <div id="excel-upload-wrapper">
+     <div id="sec-staff" class="section">
+        <div id="excel-upload-wrapper">
       <hr style="margin:16px 0; border:none; border-top:1px dashed #e5e7eb;">
-      <div class="form-row">
-        <div class="form-group">
-          <label>엑셀로 팀 명단 업로드 (조 / 팀이름)</label>
-          <input type="file" id="team-upload-file" accept=".xlsx,.xls,.csv">
-        </div>
-        <button class="btn btn-sm" style="align-self:flex-end;" onclick="importTeamsFromExcel()">엑셀에서 불러오기</button>
+      <div class="card admin-only">
+    <div class="form-row">
+      <div class="form-group">
+        <label>엑셀로 팀 명단 업로드 (조 / 팀이름)</label>
+        <input type="file" id="team-upload-file" accept=".xlsx,.xls,.csv">
       </div>
+      <button class="btn btn-sm" style="align-self:flex-end;" onclick="importTeamsFromExcel()">엑셀에서 불러오기</button>
     </div>
-  <div id="sec-staff" class="section">
+  </div>
     <div class="card">
       <h2>🦺 운영진 · 심판 명단</h2>
       <div class="form-row" style="margin-bottom:20px;">
