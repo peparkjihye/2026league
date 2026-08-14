@@ -530,6 +530,33 @@ function updateAdminUI() {
       }
     }
   }
+    const teamCard = document.querySelector('#??? .card'); // ← 실제 팀 관리 섹션 id 필요
+  if (teamCard) {
+    if (isAdmin()) {
+      teamCard.style.opacity = '1';
+      teamCard.style.pointerEvents = 'auto';
+      const info = teamCard.querySelector('.admin-info');
+      if (info) info.remove();
+    } else {
+      teamCard.style.opacity = '0.4';
+      teamCard.style.pointerEvents = 'none';
+      if (!teamCard.querySelector('.admin-info')) {
+        const div = document.createElement('div');
+        div.className = 'admin-info';
+        div.style.marginBottom = '10px';
+        div.style.color = 'var(--red)';
+        div.style.fontSize = '0.85rem';
+        div.textContent = '※ 관리자만 팀 등록/삭제가 가능합니다. 상단의 [관리자 로그인] 버튼을 사용해 주세요.';
+        teamCard.insertBefore(div, teamCard.firstChild);
+      }
+    }
+  }
+
+  const excelWrap = document.getElementById('excel-upload-wrapper');
+  if (excelWrap) {
+    excelWrap.style.display = isAdmin() ? 'block' : 'none';
+  }
+}
   const excelWrap = document.getElementById('excel-upload-wrapper');
   if (excelWrap) {
     excelWrap.style.display = isAdmin() ? 'block' : 'none';
