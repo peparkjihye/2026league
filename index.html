@@ -530,7 +530,8 @@ function updateAdminUI() {
       }
     }
   }
-    const teamCard = document.querySelector('team-list .card');
+
+  const teamCard = document.querySelector('#sec-teams .card'); /* 참고: 원래 셀렉터도 잘못됐던 부분 (아래 설명) */
   if (teamCard) {
     if (isAdmin()) {
       teamCard.style.opacity = '1';
@@ -557,11 +558,7 @@ function updateAdminUI() {
     excelWrap.style.display = isAdmin() ? 'block' : 'none';
   }
 }
-  const excelWrap = document.getElementById('excel-upload-wrapper');
-  if (excelWrap) {
-    excelWrap.style.display = isAdmin() ? 'block' : 'none';
-  }
-}
+
 function onAdminLoginClick(e) {
   e.stopPropagation();
   if (isAdmin()) {
@@ -573,7 +570,6 @@ function onAdminLoginClick(e) {
     ensureAdmin();
   }
 }
-
 /* ===== 학년 전환 & 섹션 전환 ===== */
 async function switchGrade(grade, el) {
   currentGrade = grade;
