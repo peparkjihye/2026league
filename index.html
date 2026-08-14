@@ -591,6 +591,20 @@ function updateAdminUI() {
   if (excelWrap) {
     excelWrap.style.display = isAdmin() ? 'block' : 'none';
   }
+  // ★ 관리자 전용 탭(경기 입력 / 팀 관리) 표시 여부 제어
+  const matchInputTab = document.getElementById('tab-match-input');
+  const teamsTab = document.getElementById('tab-teams');
+  [matchInputTab, teamsTab].forEach(tab => {
+    if (tab) tab.style.display = isAdmin() ? 'inline-block' : 'none';
+  });
+
+  // ★ 로그아웃 시, 숨겨진 탭을 보고 있었다면 대시보드로 자동 이동
+  if (!isAdmin()) {
+    const activeSection = document.querySelector('.section.active');
+    if (activeSection && (activeSection.id === 'sec-match-input' || activeSection.id === 'sec-teams')) {
+      showSection('dashboard');
+    }
+  }
 
   // ★ 로그인/로그아웃 시 경기 기록·본선경기 탭의 수정/삭제 버튼도 즉시 반영
   renderResults();
