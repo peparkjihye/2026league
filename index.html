@@ -587,12 +587,15 @@ function updateAdminUI() {
     }
   }
 
-  const excelWrap = document.getElementById('excel-upload-wrapper');
+    const excelWrap = document.getElementById('excel-upload-wrapper');
   if (excelWrap) {
     excelWrap.style.display = isAdmin() ? 'block' : 'none';
   }
-}
 
+  // ★ 로그인/로그아웃 시 경기 기록·본선경기 탭의 수정/삭제 버튼도 즉시 반영
+  renderResults();
+  renderFinals();
+}
 function onAdminLoginClick(e) {
   e.stopPropagation();
   if (isAdmin()) {
@@ -979,10 +982,11 @@ function renderFinals() {
             ${m.ref2?`<span>🟠 부심: ${m.ref2}</span>`:''}
             ${m.note?`<span>📝 ${m.note}</span>`:''}
           </div>
+                   ${isAdmin() ? `
           <div class="match-footer">
             <button class="btn-sm" style="background:#e0f2fe;color:var(--blue);border-radius:6px;border:none;cursor:pointer;margin-right:6px;" onclick="editMatch(${m.id})">📝 수정</button>
             <button class="btn-danger" onclick="removeMatch(${m.id})">🗑 삭제</button>
-          </div>
+          </div>` : ''}
         </div>`;
       }).join('');
     }
@@ -1164,10 +1168,11 @@ function renderResults() {
         ${m.hsub||m.asub?`<span>🔄 교체: ${home.name} ${m.hsub}회 / ${away.name} ${m.asub}회</span>`:''}
         ${m.note?`<span>📝 ${m.note}</span>`:''}
       </div>
+            ${isAdmin() ? `
       <div class="match-footer">
         <button class="btn-sm" style="background:#e0f2fe;color:var(--blue);border-radius:6px;border:none;cursor:pointer;margin-right:6px;" onclick="editMatch(${m.id})">📝 수정</button>
         <button class="btn-danger" onclick="removeMatch(${m.id})">🗑 삭제</button>
-      </div>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
